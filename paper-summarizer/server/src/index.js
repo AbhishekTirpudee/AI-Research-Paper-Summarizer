@@ -7,7 +7,23 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+    'https://ai-research-paper-summarizer.onrender.com',
+    'https://ai-research-paper-summarizer-client.onrender.com',
+    'http://localhost:5173',
+    'http://localhost:3000',
+];
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        return callback(null, true); // Allow all for now
+    },
+    credentials: true,
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
